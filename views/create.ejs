@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Notez votre trajet avec un système d'étoiles simple et intuitif.">
+  <meta name="theme-color" content="#0052cc">
+  <title>Nouveau trajet - Trip Ratings</title>
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="container py-5">
+    <!-- Header -->
+    <header class="mb-5">
+      <a href="/" class="btn btn-secondary">
+        ← Retour
+      </a>
+    </header>
+
+    <!-- Form Card -->
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-8 col-lg-6">
+        <div class="card border-0 shadow-lg">
+          <div class="card-body p-4 p-md-5">
+            <form id="ratingForm" novalidate>
+              <!-- Hidden Date Input (auto-filled) -->
+              <input type="hidden" id="tripDate" name="tripDate">
+
+              <!-- Name Input Group (optional) -->
+              <div class="mb-5">
+                <label for="name" class="form-label fw-bold mb-3">
+                  <span class="me-2">👤</span>
+                  Votre nom <span class="fw-normal optional-text">(optionnel)</span>
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  class="form-control form-control-lg"
+                  placeholder="ex: Jean, Marie..."
+                  maxlength="50"
+                >
+              </div>
+
+              <!-- Rating Selection Group -->
+              <div class="mb-5">
+                <label class="form-label fw-bold mb-4">
+                  <span class="me-2">⭐</span>
+                  Comment était votre trajet ?
+                </label>
+
+                <div class="row g-2">
+                  <!-- 1 Star -->
+                  <div class="col-6 col-md-4">
+                    <input
+                      type="radio"
+                      id="rating1"
+                      name="rating"
+                      value="1"
+                      class="btn-check"
+                      required
+                      aria-label="1 étoile - Mauvais"
+                    >
+                    <label for="rating1" class="btn btn-outline-primary w-100 py-4 rating-btn">
+                      <div class="fs-4 mb-2">⭐</div>
+                      <small class="fw-bold text-uppercase d-block">Mauvais</small>
+                    </label>
+                  </div>
+
+                  <!-- 2 Stars -->
+                  <div class="col-6 col-md-4">
+                    <input
+                      type="radio"
+                      id="rating2"
+                      name="rating"
+                      value="2"
+                      class="btn-check"
+                      aria-label="2 étoiles - Moyen"
+                    >
+                    <label for="rating2" class="btn btn-outline-primary w-100 py-4 rating-btn">
+                      <div class="fs-4 mb-2">⭐⭐</div>
+                      <small class="fw-bold text-uppercase d-block">Moyen</small>
+                    </label>
+                  </div>
+
+                  <!-- 3 Stars -->
+                  <div class="col-6 col-md-4">
+                    <input
+                      type="radio"
+                      id="rating3"
+                      name="rating"
+                      value="3"
+                      class="btn-check"
+                      aria-label="3 étoiles - Acceptable"
+                    >
+                    <label for="rating3" class="btn btn-outline-primary w-100 py-4 rating-btn">
+                      <div class="fs-4 mb-2">⭐⭐⭐</div>
+                      <small class="fw-bold text-uppercase d-block">OK</small>
+                    </label>
+                  </div>
+
+                  <!-- 4 Stars -->
+                  <div class="col-6 col-md-4">
+                    <input
+                      type="radio"
+                      id="rating4"
+                      name="rating"
+                      value="4"
+                      class="btn-check"
+                      aria-label="4 étoiles - Bien"
+                    >
+                    <label for="rating4" class="btn btn-outline-primary w-100 py-4 rating-btn">
+                      <div class="fs-4 mb-2">⭐⭐⭐⭐</div>
+                      <small class="fw-bold text-uppercase d-block">Bien</small>
+                    </label>
+                  </div>
+
+                  <!-- 5 Stars -->
+                  <div class="col-6 col-md-4">
+                    <input
+                      type="radio"
+                      id="rating5"
+                      name="rating"
+                      value="5"
+                      class="btn-check"
+                      aria-label="5 étoiles - Excellent"
+                    >
+                    <label for="rating5" class="btn btn-outline-primary w-100 py-4 rating-btn">
+                      <div class="fs-4 mb-2">⭐⭐⭐⭐⭐</div>
+                      <small class="fw-bold text-uppercase d-block">Excellent</small>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Submit Button -->
+              <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold py-3">
+                <span id="submitText">Enregistrer</span>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    const form = document.getElementById('ratingForm');
+    const dateInput = document.getElementById('tripDate');
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const submitText = document.getElementById('submitText');
+
+    // Préremplir avec la date/heure actuelle
+    function setCurrentDateTime() {
+      const now = new Date();
+      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+      dateInput.value = now.toISOString().slice(0, 16);
+    }
+
+    setCurrentDateTime();
+
+    // Soumettre le formulaire
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const rating = document.querySelector('input[name="rating"]:checked');
+      if (!rating) {
+        alert('Veuillez sélectionner une note');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      const originalText = submitText.textContent;
+      submitText.textContent = '⏳ Enregistrement...';
+
+      try {
+        const response = await fetch('/api/ratings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            rating: parseInt(rating.value),
+            tripDate: dateInput.value
+          })
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.message || 'Erreur lors de l\'enregistrement');
+        }
+
+        submitText.textContent = 'Enregistré !';
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 1000);
+      } catch (err) {
+        alert('Erreur: ' + err.message);
+        submitBtn.disabled = false;
+        submitText.textContent = originalText;
+      }
+    });
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && e.ctrlKey) {
+        form.dispatchEvent(new Event('submit'));
+      }
+      if (e.key === 'Escape') {
+        window.location.href = '/';
+      }
+    });
+
+    dateInput.focus();
+  </script>
+</body>
+</html>

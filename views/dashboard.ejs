@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Notez vos trajets avec un système d'étoiles simple et intuitif. Suivi complet de vos évaluations.">
+  <meta name="theme-color" content="#0052cc">
+  <title>Trip Ratings</title>
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="container py-4 py-md-5">
+    <!-- Header -->
+    <header class="mb-5 d-flex justify-content-between align-items-center flex-wrap gap-3">
+      <h1 class="fw-bold mb-0 dashboard-title-main">🚗 Trip Ratings</h1>
+      <a href="/create" class="btn btn-primary btn-lg">+ Nouveau trajet</a>
+    </header>
+
+    <!-- Stats Grid -->
+    <section class="mb-5">
+      <div class="row g-3 g-md-4">
+        <!-- Stat: Total -->
+        <div class="col-6 col-md-3">
+          <div class="card h-100 shadow-sm stat-card">
+            <div class="card-body text-center p-4">
+              <h6 class="text-uppercase fw-bold mb-3 stat-label" style="font-size: 0.75rem;">
+                📊 Total
+              </h6>
+              <div class="stat-value"><%= stats.total %></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stat: Moyenne -->
+        <div class="col-6 col-md-3">
+          <div class="card h-100 shadow-sm stat-card">
+            <div class="card-body text-center p-4">
+              <h6 class="text-uppercase fw-bold mb-3 stat-label" style="font-size: 0.75rem;">
+                ⭐ Moyenne
+              </h6>
+              <div class="stat-value"><%= stats.average.toFixed(1) %></div>
+              <div class="fs-5 mt-2">
+                <% for (let i = 0; i < Math.round(stats.average); i++) { %>⭐<% } %>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stat: Min -->
+        <div class="col-6 col-md-3">
+          <div class="card h-100 shadow-sm stat-card">
+            <div class="card-body text-center p-4">
+              <h6 class="text-uppercase fw-bold mb-3 stat-label" style="font-size: 0.75rem;">
+                📉 Minimum
+              </h6>
+              <div class="stat-value"><%= stats.minRating %></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stat: Max -->
+        <div class="col-6 col-md-3">
+          <div class="card h-100 shadow-sm stat-card">
+            <div class="card-body text-center p-4">
+              <h6 class="text-uppercase fw-bold mb-3 stat-label" style="font-size: 0.75rem;">
+                📈 Maximum
+              </h6>
+              <div class="stat-value"><%= stats.maxRating %></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Ratings List Card -->
+    <section class="card shadow-md">
+      <div class="card-header border-bottom py-4">
+        <h5 class="mb-0 fw-bold dashboard-title">📋 Historique des trajets</h5>
+      </div>
+
+      <div class="card-body p-4 p-md-5">
+        <% if (ratings.length === 0) { %>
+          <!-- Empty State -->
+          <div class="text-center py-5">
+            <div class="display-1 mb-4">📭</div>
+            <p class="fs-5 mb-4 empty-state-text">Aucun trajet noté pour le moment</p>
+            <a href="/create" class="btn btn-primary btn-lg">Ajouter votre premier trajet</a>
+          </div>
+        <% } else { %>
+          <!-- Table - Responsive -->
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead>
+                <tr class="border-bottom">
+                  <th class="fw-bold text-uppercase small ps-0">
+                    📅 Date
+                  </th>
+                  <th class="fw-bold text-uppercase small text-center">
+                    ⭐ Note
+                  </th>
+                  <th class="fw-bold text-uppercase small">
+                    👤 Nom
+                  </th>
+                  <th class="fw-bold text-uppercase small">
+                    ⏰ Enregistré
+                  </th>
+                  <th class="fw-bold text-uppercase small text-end pe-0">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <% ratings.forEach(rating => { %>
+                  <tr class="border-bottom-light">
+                    <td class="ps-0">
+                      <span class="fw-medium">
+                        <%= new Date(rating.tripDate).toLocaleDateString('fr-FR', {
+                          weekday: 'short',
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric'
+                        }) %>
+                      </span>
+                    </td>
+                    <td class="text-center">
+                      <span class="fs-5">
+                        <% for (let i = 0; i < rating.rating; i++) { %>⭐<% } %>
+                      </span>
+                    </td>
+                    <td>
+                      <span class="fw-medium">
+                        <%= rating.name || '—' %>
+                      </span>
+                    </td>
+                    <td class="small table-secondary-text">
+                      <%= new Date(rating.createdAt).toLocaleTimeString('fr-FR', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      }) %>
+                    </td>
+                    <td class="text-end pe-0">
+                      <button
+                        onclick="deleteRating(<%= rating.id %>, event)"
+                        class="btn btn-sm btn-danger"
+                        title="Supprimer ce trajet"
+                        aria-label="Supprimer">
+                        🗑️
+                      </button>
+                    </td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        <% } %>
+      </div>
+    </section>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    function deleteRating(id, event) {
+      event.preventDefault();
+      if (confirm('Êtes-vous sûr de vouloir supprimer ce trajet ?')) {
+        const btn = event.target;
+        btn.disabled = true;
+        btn.textContent = '⏳';
+
+        fetch(`/api/ratings/${id}`, { method: 'DELETE' })
+          .then(res => {
+            if (!res.ok) throw new Error('Erreur lors de la suppression');
+            window.location.reload();
+          })
+          .catch(err => {
+            alert('Erreur: ' + err.message);
+            btn.disabled = false;
+            btn.textContent = '🗑️';
+          });
+      }
+    }
+
+    // Keyboard shortcut: Ctrl+N for new rating
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'n' && e.ctrlKey) {
+        e.preventDefault();
+        window.location.href = '/create';
+      }
+    });
+  </script>
+</body>
+</html>
