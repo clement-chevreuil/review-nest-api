@@ -8,23 +8,23 @@ import { Rating } from './entities/rating.entity';
 export class RatingsService {
   constructor(private readonly repository: RatingsRepository) {}
 
-  create(createRatingDto: CreateRatingDto): Rating {
+  create(createRatingDto: CreateRatingDto): Promise<Rating> {
     return this.repository.create(createRatingDto);
   }
 
-  findAll(): Rating[] {
+  findAll(): Promise<Rating[]> {
     return this.repository.findAll();
   }
 
-  findOne(id: number): Rating | null {
+  findOne(id: number): Promise<Rating | null> {
     return this.repository.findOne(id);
   }
 
-  update(id: number, updateRatingDto: UpdateRatingDto): Rating | null {
+  update(id: number, updateRatingDto: UpdateRatingDto): Promise<Rating | null> {
     return this.repository.update(id, updateRatingDto);
   }
 
-  delete(id: number): boolean {
+  delete(id: number): Promise<boolean> {
     return this.repository.delete(id);
   }
 

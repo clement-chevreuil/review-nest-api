@@ -1,7 +1,19 @@
-export interface Rating {
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+
+@Entity('ratings')
+export class Rating {
+  @PrimaryGeneratedColumn()
   id: number;
-  rating: number; // 1-5
-  name?: string | null; // Optional name
-  tripDate: string; // ISO date string
-  createdAt: string; // ISO date string
+
+  @Column({ type: 'integer' })
+  rating: number;
+
+  @Column({ type: 'text', nullable: true })
+  name: string | null;
+
+  @Column({ type: 'text' })
+  tripDate: string;
+
+  @Column({ type: 'text' })
+  createdAt: string;
 }

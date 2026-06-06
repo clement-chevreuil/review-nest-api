@@ -19,9 +19,11 @@ export class RatingsController {
   // Page d'accueil / Dashboard
   @Get()
   @Render('dashboard')
-  getDashboard() {
-    const ratings = this.ratingsService.findAll();
-    const stats = this.ratingsService.getStats();
+  async getDashboard() {
+    const [ratings, stats] = await Promise.all([
+      this.ratingsService.findAll(),
+      this.ratingsService.getStats(),
+    ]);
 
     return {
       ratings,
@@ -62,8 +64,8 @@ export class RatingsController {
 
   // API: Supprimer une notation
   @Delete('api/ratings/:id')
-  delete(@Param('id') id: string) {
-    const success = this.ratingsService.delete(+id);
+  async delete(@Param('id') id: string) {
+    const success = await this.ratingsService.delete(+id);
     return { success };
   }
 
